@@ -3,6 +3,7 @@ Perceptron — AND Gate Binary Classification
 Trains a single perceptron on the AND logic gate.
 Outputs decision boundary snapshots and weight history.
 """
+from pathlib import Path
 import numpy as np, json
 np.random.seed(0)
 
@@ -73,6 +74,6 @@ result = {
     "test_cases": test_cases,
     "epochs": epochs,
 }
-with open("/home/claude/nn_scripts/out_perceptron.json","w") as f:
+with open(Path(__file__).with_name("out_perceptron.json"),"w") as f:
     json.dump(result, f)
 print("Perceptron done. Final acc:", acc_hist[-1])

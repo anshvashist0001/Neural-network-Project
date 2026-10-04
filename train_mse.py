@@ -3,6 +3,7 @@ MSE Linear Regression — House Price Prediction
 Trains a simple linear regression model (y = w*x + b) via gradient descent.
 Outputs scatter data, prediction line, and loss history.
 """
+from pathlib import Path
 import numpy as np, json, random
 random.seed(42); np.random.seed(42)
 
@@ -62,6 +63,6 @@ result = {
     "epochs": epochs,
     "labels": {"x": "House Size (sqft)", "y": "Price ($k)"},
 }
-with open("/home/claude/nn_scripts/out_mse.json","w") as f:
+with open(Path(__file__).with_name("out_mse.json"),"w") as f:
     json.dump(result, f)
 print("MSE done. Final loss:", loss_hist[-1])
