@@ -3,6 +3,7 @@ Backpropagation — XOR Classification
 2-layer MLP trained with backprop. Outputs weight gradients,
 loss surface samples, and decision boundary evolution.
 """
+from pathlib import Path
 import numpy as np, json
 np.random.seed(1)
 
@@ -18,7 +19,7 @@ b1 = np.zeros((1,4))
 W2 = np.random.randn(4,1)*0.8
 b2 = np.zeros((1,1))
 lr = 0.5
-epochs = 100
+epochs = 2500
 
 loss_hist, acc_hist = [], []
 grad_norm_hist = []
@@ -49,7 +50,7 @@ def get_boundary_grid():
 for ep in range(1, epochs+1):
     z1,a1,z2,a2 = forward(X)
     loss = float(np.mean((y-a2)**2))
-    d2 = -(y-a2)*sig_d(z2)
+    d2 = 2*(a2-y)*sig_d(z2)/len(X)
     dW2 = a1.T@d2; db2=d2.sum(0,keepdims=True)
     d1 = d2@W2.T*sig_d(z1)
     dW1 = X.T@d1; db1=d1.sum(0,keepdims=True)
@@ -59,7 +60,7 @@ for ep in range(1, epochs+1):
     loss_hist.append(round(loss,6))
     acc_hist.append(round(acc,1))
     grad_norm_hist.append(round(gn,4))
-    if ep in [1,10,25,50,75,100]:
+    if ep in [1,100,500,1000,1500,2500]:
         snapshots.append({"ep":ep,"boundary":get_boundary_grid(),"acc":round(acc,1)})
 
 def test_xor(x0,x1):
@@ -83,7 +84,8 @@ result={
     "test_cases":test_cases,
     "epochs":epochs,
     "architecture":[2,4,1],
+    "weights": {"W1": W1.tolist(), "b1": b1.tolist(), "W2": W2.tolist(), "b2": b2.tolist()},
 }
-with open("/home/claude/nn_scripts/out_backprop.json","w") as f:
+with open(Path(__file__).with_name("out_backprop.json"),"w") as f:
     json.dump(result,f)
 print("Backprop done. Final acc:",acc_hist[-1])
